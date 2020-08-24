@@ -30,7 +30,7 @@ public class BowlingMain {
         for (int i = 0; i < whereTo; i++) {
             String rawRoll = rawRolls.get(i);
 
-            if (rawRoll == "X") {
+            if (rawRoll.equals("X")) {
                 System.out.print(rawRoll + " | ");
             } else {
                 System.out.print(rawRoll + ", " + rawRolls.get(i + 1) + " | ");
