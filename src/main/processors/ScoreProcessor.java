@@ -9,15 +9,15 @@ public class ScoreProcessor {
 
     /**
      * @param scoredRolls - list of rolls mapped to their numerical values
-     * @param whereTo     - the index where the last frame starts
+     * @param lastFrameStart     - the index where the last frame starts
      * @return the total score of this one line (10 frames) of rolls
      */
-    public int calculateTotalScore(List<Integer> scoredRolls, int whereTo) {
+    public int calculateTotalScore(List<Integer> scoredRolls, int lastFrameStart) {
         int totalScoreSoFar = 0;
         int curFrameScore = 0;
 
         // calculate total based on 1st to second-last frames
-        for (int i = 0; i < whereTo; i++) {
+        for (int i = 0; i < lastFrameStart; i++) {
             final int curRollScore = scoredRolls.get(i);
             if (curRollScore == 10) { // strike
                 // 10 for this strike + next 2 rolls' score
@@ -34,7 +34,7 @@ public class ScoreProcessor {
 
         // deal with the last frame
         curFrameScore = 0;
-        for (int i = whereTo; i < scoredRolls.size(); i++) {
+        for (int i = lastFrameStart; i < scoredRolls.size(); i++) {
             curFrameScore += scoredRolls.get(i);
         }
         totalScoreSoFar += curFrameScore;
