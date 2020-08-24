@@ -20,7 +20,7 @@ public class RollProcessor {
         return scoredRolls;
     }
 
-    public Integer getRollScore(List<String> rawRolls, int rollIndex) {
+    private Integer getRollScore(List<String> rawRolls, int rollIndex) {
         int scoreValue = -1;
 
         final String roll = rawRolls.get(rollIndex);
