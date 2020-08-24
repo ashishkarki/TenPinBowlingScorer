@@ -6,42 +6,57 @@ import main.processors.ScoreProcessor;
 import java.util.List;
 
 public class BowlingMain {
+    private RollProcessor rollProcessor;
+    private ScoreProcessor scoreProcessor;
+
+    public BowlingMain(RollProcessor rp, ScoreProcessor sp) {
+        rollProcessor = rp;
+        scoreProcessor = sp;
+    }
 
     public static void main(String[] args) {
-        RollProcessor rollProcessor = new RollProcessor();
-        ScoreProcessor scoreProcessor = new ScoreProcessor();
-        BowlingMain bowlingMain = new BowlingMain();
+        BowlingMain bowlingMain = new BowlingMain(new RollProcessor(), new ScoreProcessor());
+        final String formattedOutput = bowlingMain.parseAndPrintFrames(args[0]);
+        System.out.println(formattedOutput);
+    }
 
-        // first read 1-line of roll from a file
-        // including strikes ('X'), spares ('/') and misses ('-')
-        List<String> rawRolls = rollProcessor.readRollsFromFile(args[0]);
+    public String parseAndPrintFrames(String filePath) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        // first read 1-line of roll from a file including strikes ('X'), spares ('/') and misses ('-')
+        List<String> rawRolls = rollProcessor.readRollsFromFile(filePath);
         List<Integer> scoredRolls = rollProcessor.getScoreFor(rawRolls);
 
-        System.out.println("| f1 | f2 | f3 | f4 | f5 | f6 | f7 | f8 | f9 | f10 |");
-        System.out.print("| ");
+        stringBuilder.append("| f1 | f2 | f3 | f4 | f5 | f6 | f7 | f8 | f9 | f10 |\n");
+        stringBuilder.append("| ");
 
-        int lastFrameStart = bowlingMain.getLastFrameStartIndex(scoredRolls);
+        int lastFrameStart = getLastFrameStartIndex(scoredRolls);
 
         for (int i = 0; i < lastFrameStart; i++) {
             String rawRoll = rawRolls.get(i);
 
             if (rawRoll.equals("X")) {
-                System.out.print(rawRoll + " | ");
+                stringBuilder.append(rawRoll + " | ");
             } else {
-                System.out.print(rawRoll + ", " + rawRolls.get(i + 1) + " | ");
+                stringBuilder.append(rawRoll + ", " + rawRolls.get(i + 1) + " | ");
                 i += 1;
             }
         }
 
         for (int i = lastFrameStart; i < rawRolls.size(); i++) {
-            System.out.print(rawRolls.get(i));
+            stringBuilder.append(rawRolls.get(i));
             if (i != rawRolls.size() - 1) {
-                System.out.print(", ");
+                stringBuilder.append(", ");
             }
         }
-        System.out.print(" |");
 
-        System.out.println("\nscore: " + scoreProcessor.calculateTotalScore(scoredRolls, lastFrameStart));
+        if (lastFrameStart != rawRolls.size()) {
+            stringBuilder.append(" |");
+        }
+
+        stringBuilder.append("\nscore: " + scoreProcessor.calculateTotalScore(scoredRolls, lastFrameStart));
+
+        return stringBuilder.toString();
     }
 
     private int getLastFrameStartIndex(List<Integer> scoredRolls) {
